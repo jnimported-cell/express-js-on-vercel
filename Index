@@ -4,35 +4,36 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 
-// Permite que o Lovable se conecte
+// 🛠️ Configuração CORS — agora 100% compatível com Lovable
 app.use(cors({
-  origin: '*', // pode trocar por o domínio do Lovable se quiser restringir
-  methods: ['GET', 'POST', 'DELETE'],
+  origin: '*', // se quiser, pode trocar pelo domínio do Lovable
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
 // Armazenamento simples em memória
 let mensagens = [];
 
-// Endpoint para enviar mensagem
+// Rota para salvar mensagem
 app.post('/salvar/mensagem', (req, res) => {
   const { nome, mensagem } = req.body;
-  if (!nome || !mensagem) return res.status(400).json({ erro: 'Faltam campos' });
+  if (!nome || !mensagem) return res.status(400).json({ erro: 'Campos faltando' });
   mensagens.push({ nome, mensagem });
-  res.json({ sucesso: true });
+  res.json({ status: 'OK' });
 });
 
-// Endpoint para obter mensagens
+// Rota para obter mensagens
 app.get('/obter/mensagens', (req, res) => {
   res.json(mensagens);
 });
 
-// Endpoint para apagar todas as mensagens
+// Rota para apagar todas as mensagens
 app.delete('/apagar/conversa', (req, res) => {
   mensagens = [];
-  res.json({ sucesso: true });
+  res.json({ status: 'Conversa apagada' });
 });
 
 // Inicialização do servidor
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor ativo na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
